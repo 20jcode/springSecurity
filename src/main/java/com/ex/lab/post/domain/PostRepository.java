@@ -1,2 +1,6 @@
-package com.ex.lab.post;public class postRepository {
+package com.ex.lab.post.domain;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PostRepository extends JpaRepository<Post,Long> {
 }
