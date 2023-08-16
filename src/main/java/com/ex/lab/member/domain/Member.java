@@ -19,14 +19,14 @@ public class Member {
 	@Column(name = "member_name")
 	private String name;
 
-	@Column(name = "member_email")
+	@Column(name = "member_email",unique = true,length = 45) //유니크 설정해서 인덱스화?
 	private String email;
 
 	@Column(name = "member_password")
 	private String password;
 
 	@Column(name = "member_tier")
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	private Tier tier;
 
 	@Builder
