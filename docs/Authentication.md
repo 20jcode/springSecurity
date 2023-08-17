@@ -120,3 +120,13 @@ SpringSecurity 의 필터들이 어떻게 인증을 수행하는 지에 대해 �
 
 # ProviderManager
 
+AuthenticationManager의 가장 일반적인 구현으로 사용되는 것이다.
+
+AuthenticationProvider 인스턴스 리스트에게 위임함으로, 각각의 
+
+AuthenticationProvider 들은 인증을 성공하거나 실패함으로 다음 AuthenticationProvider로
+
+가는 것을 결정할 수 있게 된다.
+
+![img_4.png](img_4.png)
+

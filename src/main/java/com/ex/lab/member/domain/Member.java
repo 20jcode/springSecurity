@@ -4,12 +4,13 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "member")
-public class Member {
+public class Member implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
