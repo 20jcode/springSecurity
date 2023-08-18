@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BasePostService implements PostService{
 
-	private final PostRepository repo;
+	private final PostRepository postRepository;
 
 	@Override
 	public long create (PostRequestDto dto) {
 
-		return repo.save(Post.builder()
+		return postRepository.save(Post.builder()
 				.name(dto.getName())
 				.body(dto.getBody())
 				.build()).getId();
@@ -34,6 +34,10 @@ public class BasePostService implements PostService{
 
 	@Override
 	public PostResponseDto read (Long postId) {
-		return null;
+		Post post = postRepository.getReferenceById(postId);
+
+		return PostResponseDto.builder()
+				.body(post.getBody())
+				.build();
 	}
 }

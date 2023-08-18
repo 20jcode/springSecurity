@@ -79,9 +79,10 @@ request 데이터를 중심으로 생각해보면, 몇몇의 과정을 거쳐서
 ## 회원가입 + 코드
 [signup.md](docs%2Fsignup.md)
 
+## 로그인 + 코드
+[signin.md](docs%2Fsignin.md)
 
-
-
+## 권한 인가 + 코드
 
 
 
@@ -114,3 +115,5 @@ https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigu
 https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/config/annotation/web/builders/HttpSecurity.htmlhttps://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/config/annotation/web/builders/HttpSecurity.html
 
 https://dev-coco.tistory.com/123
+
+https://jaimemin.tistory.com/1874

@@ -10,6 +10,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
+import javax.imageio.IIOException;
+import java.io.IOException;
+
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
@@ -17,7 +20,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,ServletException {
 		String token = jwtProvider.resolveToken((HttpServletRequest) request);
 		// 유효한 토큰인지 확인합니다.
 		if (token != null && jwtProvider.validateToken(token)) {
