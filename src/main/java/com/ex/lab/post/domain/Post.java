@@ -27,4 +27,12 @@ public class Post {
 		this.name = name;
 		this.body = body;
 	}
+
+	public void updatePostName(String name){
+		this.name = name;
+	}
+
+	public void updatePostBody(String body){
+		this.body = body;
+	}
 }

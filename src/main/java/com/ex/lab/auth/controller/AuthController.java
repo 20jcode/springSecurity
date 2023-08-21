@@ -24,6 +24,6 @@ public class AuthController {
 
 	@GetMapping("/auth/signin")
 	public String signIn(@RequestParam String email, @RequestParam String password) {
-		return memberService.loginWithEmailAndPassword(email, password);
+		return memberService.loginEmailAndPassword(email, password);
 	}
 }

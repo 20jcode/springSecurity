@@ -9,6 +9,7 @@ import com.ex.lab.security.JwtProvider;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
+	//private final AuthenticationManager authenticationManager;
 
 	@Transactional
 	public SignUpResponse createNewMember(SignUpForm signUpForm){
@@ -62,5 +64,11 @@ public class MemberService {
 	private String createJwt(Member member){
 		return jwtProvider.createToken(member.getUsername(), member.getAuthorities()
 				.stream().map(Object::toString).collect(Collectors.toList()));
+	}
+
+	private void getAuth(String email,String password){
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(email,password);
+
+
 	}
 }

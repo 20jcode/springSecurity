@@ -9,6 +9,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,6 +35,7 @@ public class JwtProvider {
 	private String secretKey = "makesomethig";
 
 	private final long tokenValidTime = 60 * 60 * 1000L;
+	private final UserDetailsService userDetailsService;
 
 	//객체 초기화 -> 스프링 싱글톤 빈의 생명주기 참고
 	@PostConstruct
@@ -57,6 +59,7 @@ public class JwtProvider {
 
 	}
 	// JWT 토큰에서 인증 정보 조회
+
 	public Authentication getAuthentication(String token) {
 		UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
 		return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

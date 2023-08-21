@@ -25,10 +25,17 @@ public class BasePostService implements PostService{
 	@Override
 	public void update (PostRequestDto dto) {
 
+		Post post = postRepository.getReferenceById(dto.getId());
+
+		post.updatePostName(dto.getName());
+
+		post.updatePostBody(dto.getBody());
 	}
 
 	@Override
 	public void del (Long postId) {
+
+		postRepository.deleteById(postId);
 
 	}
 
@@ -37,6 +44,7 @@ public class BasePostService implements PostService{
 		Post post = postRepository.getReferenceById(postId);
 
 		return PostResponseDto.builder()
+				.name(post.getName())
 				.body(post.getBody())
 				.build();
 	}
