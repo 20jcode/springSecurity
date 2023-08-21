@@ -30,7 +30,7 @@ public class SecurityConfig{
 	private final JwtProvider jwtTokenProvider;
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http ,HandlerMappingIntrospector introspector) throws Exception {
-		MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector).servletPath("/path");
+		MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
 
 		return http
 				.csrf(AbstractHttpConfigurer::disable)
@@ -39,8 +39,9 @@ public class SecurityConfig{
 				.httpBasic(AbstractHttpConfigurer::disable)
 				.sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //Restful 하기 위한 설정들
 				.authorizeHttpRequests(authorRequest->authorRequest
-						.requestMatchers(mvcMatcherBuilder.pattern("/sign")).permitAll()
-						.anyRequest().hasRole("LOW"))
+						.requestMatchers(mvcMatcherBuilder.pattern("/auth/**")).permitAll()
+						.anyRequest().hasRole("LOW")
+				)
 				.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
 				.build();
 

@@ -13,7 +13,7 @@ public class SignUpForm {
 
 	private String memberName;
 
-	private String password;
+	private String password; //TODO : 비밀번호 짫으면 안되기
 
 	private String email;
 

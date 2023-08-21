@@ -10,6 +10,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +26,7 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
-	//private final AuthenticationManager authenticationManager;
+	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
 	@Transactional
 	public SignUpResponse createNewMember(SignUpForm signUpForm){
@@ -54,9 +56,11 @@ public class MemberService {
 
 		if (member.isEmpty()){
 			throw new IllegalArgumentException("이메일이 존재하지 않습니다");
-		} else if(passwordEncoder.matches(password,member.get().getPassword()))  {
+		} else if(!passwordEncoder.matches(password,member.get().getPassword()))  {
 			throw new IllegalArgumentException("패스워드가 일치하지 않습니다");
 		}
+
+		getAuth(email,password); //TODO : 이부분 인증이 없는 것 아닌가?
 
 		return createJwt(member.get());
 	}
@@ -69,6 +73,7 @@ public class MemberService {
 	private void getAuth(String email,String password){
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(email,password);
 
+		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(token);
 
 	}
 }
