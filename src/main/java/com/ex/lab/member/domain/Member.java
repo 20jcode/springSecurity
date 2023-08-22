@@ -46,11 +46,7 @@ public class Member implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities () {
-		List<SimpleGrantedAuthority> list = new ArrayList<>();
-
-		list.add(new SimpleGrantedAuthority(tier.toString()));
-
-		return list;
+		return tierConvert(tier);
 	}
 
 	@Override
@@ -76,5 +72,12 @@ public class Member implements UserDetails {
 	@Override
 	public boolean isEnabled () {
 		return true;
+	}
+
+	private List<SimpleGrantedAuthority> tierConvert(Tier tier){
+		List<SimpleGrantedAuthority> list = new ArrayList<>();
+		//TODO : 구현하기
+
+		return list;
 	}
 }

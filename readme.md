@@ -5,6 +5,12 @@
 RESTful api server
 JWT 사용
 
+좀 더 멋지게 정리해서 스프링 시큐리티를 처음 쓰는 사람도 하루만에 마스터할 수 있게 하고 싶은데
+글실력이 부족해서 조금씩 파편화 되어있다.
+
+최신 스프링 시큐리티 권장에 맞추기 위해서 람다식을 사용함.
+
+
 ### 의존성 구성
 'org.springframework.boot' version '3.1.2'
 'io.jsonwebtoken:jjwt-api:0.11.5'
@@ -17,6 +23,13 @@ java corretto-17
 
 ### 참고 : 인증에 대하여
 [Authentication.md](docs%2FAuthentication.md)
+
+(구버전 문서들)
+## 회원가입 + 코드
+[signup.md](docs%2Fsignup.md)
+
+## 로그인 + 코드
+[signin.md](docs%2Fsignin.md)
 
 
 # 0단계 : 목표
@@ -46,48 +59,63 @@ runtimeOnly 'io.jsonwebtoken:jjwt-jackson:JJWT_RELEASE_VERSION'
 Restful api server에서 시큐리티를 사용하는 것이 목표다.
 기본적인 스프링 시큐리티와 추가적으로 jwt를 이용할 것이기에 해당 의존성을 추가해주자.
 
+# 3단계 : 구현을 통해 알아보는 흐름
 
-# 3단계 : 회원가입 과정
+기초적인 스프링 시큐리티의 동작을 위해서 구현해야하는 것들은 다음과 같다.
 
-서버에 누군가가 회원가입을 위해 http Post request를 보낸다고 생각하고 시작하겠다.
+### JwtProvider
 
-위의 스프링시큐리티 기본 흐름에서 보면 알다싶이, 스프링은 서블릿 컨테이너에서 특정 서블릿(예를 들어, 스프링 컨테이너)
+AuthenticationProvider 역할을 하는 구현체이다.
 
-으로 가기 전에 필터로 동작한다.
+Jwt과 관련된 모든 책임과 역할을 진행한다.
 
-request 데이터를 중심으로 생각해보면, 몇몇의 과정을 거쳐서 스프링 시큐리티의 필터로 들어오게 된다.
+### JwtAuthenticationFilter
 
-스프링 시큐리티는 위임 프록시(DelegatingFilterProxy)로 필터를 제공하고 있으며, 실제 보안과 관련된 동작은 스프링 컨테이너의 Bean에 위임하고 있다.
+AuthenticationFilter 역할을 한다.
+스프링 시큐리티 필터에 등록되어서, 요청에 포함된 Jwt에 대해 JwtProvider를 이용해서 요청을 '필터'한다.
 
-1. request요청이 서블릿 컨테이너로 들어오게됨 (스프링 부트 기준 Tomcat)
+### CustomUserDetailService
 
-2. 서블릿으로 가기 전 필터를 거치게 됨 - 스프링 시큐리티 필터(DelegatingFilterProxy)를 만남.
+UserDetailsService 역할을 한다.
 
-3. DelegatingFilterProxy에서 스프링 컨테이너에서 SecurityFilterChain 빈을 얻은 다음 request요청의 처리를 위임함
+DAO이며 시큐리티에서 회원에 대해 조회할 때 사용되어진다. (아마도)
 
-4. 이떄 스프링 컨테이너의 SecurityFilterChain 빈은 SecurityConfig.class(@EnableWebSecurity - @Configration이 포함되어있음)
-   에서 @Bean에서 반환된 객체이다.
+### SecurityConfig
 
-5. request요청이 처리되어 SecurityFilterChain객체을 통과하면 실제 목적지인 스프링 컨테이너의 Controller로 이동하게됨.
+실질적인 필터 구성에 대해서 설정하고, 이를 빈으로 등록해준다.
 
-대략적인 흐름은 이러하다.
+여기서 생성된 빈은 스프링 시큐리티의 프록시객체가 호출해서 사용되어진다.
 
-이제는 실제 코드를 기준으로 어떤 식으로 동작하는 지 보겠다.
+### Member implements UserDetail
+
+멤버엔티티에서 UserDetail 인터페이스을 구현해야한다.
+
+해당 인터페이스 또한 시큐리티에서 회원에 대한 정보를 조회하고 검증할 때 사용하게 된다.
+
+### 그 외
+
+회원가입과 로그인 등에 사용될 컨트롤러와 서비스를 구현해야한다.
+
+개인 혹은 단체의 철학에 따라 어떤 곳에 어떤 식으로 배치할 지는 각자 다르므로...
+
+# 4단계 : 구현으로 알아보기
+
+## JwtProvider
+
+[JwtProvider.java](src%2Fmain%2Fjava%2Fcom%2Fex%2Flab%2Fsecurity%2FJwtProvider.java)
+
+시크릿 키부분 수정 필요
+
+동작 테스트 코드 작성 필요
+
+권한 role에 대해서 설정 필요
+
+post 5회 작성 시 role 내려가는 기능 구현 필요
+
+
+
 
 ---
-
-## 회원가입 + 코드
-[signup.md](docs%2Fsignup.md)
-
-## 로그인 + 코드
-[signin.md](docs%2Fsignin.md)
-
-## 권한 인가 + 코드
-
-
-
-
-
 
 ### 참조링크
 

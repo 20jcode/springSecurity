@@ -1,5 +1,28 @@
 # 회원가입 과정에서
 
+서버에 누군가가 회원가입을 위해 http Post request를 보낸다고 생각하고 시작하겠다.
+
+위의 스프링시큐리티 기본 흐름에서 보면 알다싶이, 스프링은 서블릿 컨테이너에서 특정 서블릿(예를 들어, 스프링 컨테이너)
+
+으로 가기 전에 필터로 동작한다.
+
+request 데이터를 중심으로 생각해보면, 몇몇의 과정을 거쳐서 스프링 시큐리티의 필터로 들어오게 된다.
+
+스프링 시큐리티는 위임 프록시(DelegatingFilterProxy)로 필터를 제공하고 있으며, 실제 보안과 관련된 동작은 스프링 컨테이너의 Bean에 위임하고 있다.
+
+1. request요청이 서블릿 컨테이너로 들어오게됨 (스프링 부트 기준 Tomcat)
+
+2. 서블릿으로 가기 전 필터를 거치게 됨 - 스프링 시큐리티 필터(DelegatingFilterProxy)를 만남.
+
+3. DelegatingFilterProxy에서 스프링 컨테이너에서 SecurityFilterChain 빈을 얻은 다음 request요청의 처리를 위임함
+
+4. 이떄 스프링 컨테이너의 SecurityFilterChain 빈은 SecurityConfig.class
+   에서 @Bean에서 반환된 객체이다.
+
+5. request요청이 처리되어 SecurityFilterChain객체을 통과하면 실제 목적지인 스프링 컨테이너의 Controller로 이동하게됨.
+
+대략적인 흐름은 이러하다.
+
 ## 회원가입 요청의 처리
 
 객체지향적인 관점에서, 회원가입과 관련된 인증에 대한 처리는 하나의 도메인이 관리하는 것이 좋다고 생각되어진다.
@@ -106,16 +129,25 @@ memberService에게 새로운 멤버 생성 요청을 전달한다.
 
 ## 6. MemberService를 이용해 회원가입 절차를 진행 - createNewMember 메소드
 
+[MemberService.java](..%2Fsrc%2Fmain%2Fjava%2Fcom%2Fex%2Flab%2Fmember%2Fservice%2FMemberService.java)
+
+## 7. createNewMember 메소드 내부에서 memberRepository를 통해서 엔티티 save
+
+먼저 전달된 signUpForm dto를 통해서 memberRepository에 영속성 엔티티를 저장한다.
+
+이때 비밀번호는 인코딩해서 저장함으로, 사용자의 개인정보를 보호해준다.
+
+(여기서 인코딩을 위한 기능은 SecurityConfig에서 Bean으로 등록해준다.)
+
+### 8. private method 인 loginEmailAndPassword 를 호출
+
+저장된 정보를 바탕으로 이메일과 비밀번호를 이용한 로그인을 진행하고, jwt를 얻는다.
+
+로그인은 signin에서도 사용되므로 private 메소드로 빼서 쓸 수 있도록 해준다.
+
+얻은 정보를 바탕으로 dto를 만들어서 반환해준다.
 
 
-## 7. createNewMember 메소드 내부에서
+몇몇의 세부적인 사항에 대해서는 아직 감을 잡기 부족하다고 생각한다.
 
-### memberRepository를 통해서 엔티티 save
-이때 passwordEncoder를 이용해서 저장
-
-### private method 인 loginEmailAndPassword 를 호출
-
-### 해당 메소드에서 jwt생성 진행
-
-### jwtPorvider를 이용해서 jwt 생성
-
+그럼 로그인과정을 통해서 어떤 식으로 시큐리티에서 인증을 거치는 지 알아보자.

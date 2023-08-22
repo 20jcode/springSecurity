@@ -73,7 +73,7 @@ public class MemberService {
 	private void getAuth(String email,String password){
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(email,password);
 
-		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(token);
+		authenticationManagerBuilder.getObject().authenticate(token);
 
 	}
 }
